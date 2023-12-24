@@ -105,7 +105,7 @@ const Dashboard = (props) => {
       component: <AboutUs />,
     },
     {
-      text: "Beggar Area",
+      text: "Area",
       icon: <LocationOnIcon className="text-[#A0A0A0]" />,
       component: <BeggerArea />,
     },

@@ -41,7 +41,7 @@ const BeggerArea = ({ area }) => {
         padding: "0px",
       }}
     >
-      <h1>BEGGAR AREAS</h1>
+      <h1>AREAS</h1>
       {areas.map((area) => (
         <Card
           sx={{
