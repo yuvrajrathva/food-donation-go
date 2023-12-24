@@ -1,14 +1,22 @@
 package main
 
 import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/yuvrajrathva/food-donation-go/database"
 	"github.com/yuvrajrathva/food-donation-go/routes"
-	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
 	database.Connect()
+
 	app := fiber.New()
-    routes.Setup(app)
+	
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
+    
+	routes.Setup(app)
+	
 	app.Listen(":8000")
 }
