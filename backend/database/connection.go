@@ -9,6 +9,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+var DB *gorm.DB
 
 func getEnvVariable(key string) string{
     err := godotenv.Load(".env")
@@ -30,6 +31,8 @@ func Connect(){
     if err!=nil{
         panic("could not connect to db")
     }
+
+    DB = db
 
     db.AutoMigrate(&models.User{})
 }
