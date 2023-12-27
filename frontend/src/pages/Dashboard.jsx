@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,9 +22,9 @@ import MyProfile from "./Dashboard/MyProfile";
 import AboutUs from "./Dashboard/AboutUs";
 import BeggerArea from "./Dashboard/BeggerArea";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { jwtDecode } from "jwt-decode";
-import { API_BASE_URL } from "../config";
-import useAxios from "../utils/useAxios";
+import AuthContext from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Login from "./Login";
 
 const drawerWidth = 240;
 const dark = {
@@ -53,35 +53,14 @@ function TabPanel(props) {
   );
 }
 
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
-}
-
 const Dashboard = (props) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [tab, setTab] = useState(0);
-
-  const [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? jwtDecode(localStorage.getItem("authTokens"))
-      : null
-  );
-  // console.log(jwtDecode(localStorage.getItem("authTokens")));
-
+  const { user, logoutUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
   };
-
-  const { window } = props;
-
-  const logout = () => {
-    localStorage.clear();
-    window.location.href = "/";
-  };
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -97,7 +76,7 @@ const Dashboard = (props) => {
     {
       text: "My Profile",
       icon: <InterestsIcon className="text-[#A0A0A0]" />,
-      component: <MyProfile />,
+      component: user ? <MyProfile data={user} /> : <Login/>,
     },
     {
       text: "About Us",
@@ -159,7 +138,7 @@ const Dashboard = (props) => {
       <List>
         <ListItem disablePadding className="text-red-600">
           <ListItemButton
-            onClick={logout}
+            onClick={logoutUser}
             sx={{
               bgcolor: "background.paper",
               display: "flex",
@@ -179,9 +158,6 @@ const Dashboard = (props) => {
       </List>
     </div>
   );
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <ThemeProvider theme={createTheme(dark)}>

@@ -2,18 +2,14 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-// import AuthContext from "../contexts/AuthContext";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { API_BASE_URL } from "../config";
-import { jwtDecode } from "jwt-decode";
 import { createTheme, ThemeProvider } from "@mui/material";
 
 const dark = {
@@ -22,56 +18,26 @@ const dark = {
   },
 };
 export default function Login() {
-  //   const { loginUser, logoutUser } = useContext(AuthContext);
-  const baseURL = API_BASE_URL;
+  const { loginUser } = useContext(AuthContext);
 
-  const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
-      : null
-  );
-  const [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? jwtDecode(localStorage.getItem("authTokens"))
-      : null
-  );
-  const [loading, setLoading] = useState(true);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
-  const navigate = useNavigate();
-
-  const loginUser = async (email, password) => {
-    const response = await fetch(baseURL + "/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-    const data = await response.json();
-
-    if (response.status === 200) {
-      setAuthTokens(data);
-      setUser(jwtDecode(data.access));
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/dashboard/");
-      toast.success("Login Successful!");
-    } else {
-      toast.error(data.detail);
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    const myPromise = new Promise((resolve, reject) => {
+      loginUser(email, password)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
 
-    loginUser(data.get("email"), data.get("password"));
+    toast.promise(myPromise, {
+      loading: "Logging you in...",
+    });
   };
 
   return (
@@ -131,9 +97,7 @@ export default function Login() {
               Sign In
             </Button>
             <Grid item>Don't have an account?</Grid>
-            <Link to="/signup">
-              Sign Up
-            </Link>
+            <Link to="/signup">Sign Up</Link>
           </Box>
         </Box>
       </Container>

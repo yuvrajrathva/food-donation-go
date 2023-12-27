@@ -10,7 +10,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import { Box } from "@mui/material";
 import React from "react";
 
-const BeggerArea = ({ area }) => {
+const BeggerArea = () => {
   const [upvoteDisabled, setUpvoteDisabled] = React.useState(false);
   const handleUpvote = () => {
     setUpvoteDisabled(true);

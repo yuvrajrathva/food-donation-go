@@ -1,62 +1,64 @@
-import * as React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import AuthContext from "../contexts/AuthContext";
 import toast from "react-hot-toast";
 
-const baseURL = API_BASE_URL;
 const dark = {
   palette: {
     mode: "dark",
   },
 };
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 export default function SignUp() {
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const [password, setPassword] = useState("");
+  const { registerUser } = useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const first_name = e.target.firstName.value;
+    const last_name = e.target.lastName.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    const myPromise = new Promise((resolve, reject) => {
+      registerUser(first_name, last_name, email, password)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
-    const response = await axios.post(baseURL + "/users/", {
-      email: data.get("email"),
-      password: data.get("password"),
+    toast.promise(myPromise, {
+      loading: "Creating your account...",
     });
-    if (response.status === 201) {
-      console.log(response.data);
-      toast.success("Registration Successful! Please login to continue.");
-      window.location.href = "/login/";
+  };
+
+  const handleConfirmPassword = () => {
+    let confPassEle = document.getElementById("password_again");
+    let confPassWarningEle = document.getElementById("compare-password-warn");
+    if (confPassEle.value != "") {
+      if (password == confPassEle.value) {
+        confPassEle.style.color = "green";
+        confPassWarningEle.style.visibility = "hidden";
+      } else {
+        confPassEle.style.color = "red";
+        confPassWarningEle.style.visibility = "visible";
+      }
+    } else {
+      confPassEle.style.color = "black";
+      confPassWarningEle.style.visibility = "hidden";
     }
   };
 
@@ -89,6 +91,7 @@ export default function SignUp() {
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
+                  type="text"
                   required
                   fullWidth
                   id="firstName"
@@ -103,6 +106,7 @@ export default function SignUp() {
                   id="lastName"
                   label="Last Name"
                   name="lastName"
+                  type="text"
                   autoComplete="family-name"
                 />
               </Grid>
@@ -113,6 +117,7 @@ export default function SignUp() {
                   id="email"
                   label="Email Address"
                   name="email"
+                  type="email"
                   autoComplete="email"
                 />
               </Grid>
@@ -125,7 +130,26 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password_again"
+                  label="Confirm Password"
+                  type="password"
+                  id="password_again"
+                  autoComplete="new-password"
+                  onChange={handleConfirmPassword}
+                />
+                <p
+                  id="compare-password-warn"
+                  style={{ color: "red", visibility: "hidden" }}
+                >
+                  password is not matching
+                </p>
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel

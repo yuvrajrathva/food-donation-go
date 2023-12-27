@@ -16,27 +16,27 @@ const Requests = () => {
   const [requests, setRequests] = React.useState([]);
   const api = useAxios();
  
-  useEffect(() => {
-    const fetchOpenPickups = async () => {
-      const response = await api.get("/open-pickups/");
-      if (response.status === 200) {
-        setRequests(response.data["Requests"]);
-      }
-      console.log(response.data);
-    };
-    fetchOpenPickups();
-  }, [acceptedRequests]);
+  // useEffect(() => {
+  //   const fetchOpenPickups = async () => {
+  //     const response = await api.get("/open-pickups/");
+  //     if (response.status === 200) {
+  //       setRequests(response.data["Requests"]);
+  //     }
+  //     console.log(response.data);
+  //   };
+  //   fetchOpenPickups();
+  // }, [acceptedRequests]);
 
-  useEffect(() => {
-    const fetchAcceptedPickups = async () => {
-      const response = await api.get("/accept-pickup/");
-      if (response.status === 200) {
-        setAcceptedRequests(response.data["Accepted-Requests"]);
-      }
-      console.log(response.data);
-    };
-    fetchAcceptedPickups();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAcceptedPickups = async () => {
+  //     const response = await api.get("/accept-pickup/");
+  //     if (response.status === 200) {
+  //       setAcceptedRequests(response.data["Accepted-Requests"]);
+  //     }
+  //     console.log(response.data);
+  //   };
+  //   fetchAcceptedPickups();
+  // }, []);
 
   const handleAccept = async (e) => {
     const response = await api.post("/pickup-accept/", {
@@ -44,7 +44,6 @@ const Requests = () => {
     });
     if (response.status === 200) {
       toast.success("Request accepted");
-      console.log(e);
 
       setAcceptedRequests([...acceptedRequests, e]);
       setRequests(
@@ -57,7 +56,6 @@ const Requests = () => {
     if (status) {
       handleAccept(e);
       toast.success("Request accepted");
-      console.log(e);
 
       setAcceptedRequests([...acceptedRequests, e]);
       setRequests(
