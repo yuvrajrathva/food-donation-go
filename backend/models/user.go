@@ -2,8 +2,8 @@ package models
 
 type User struct {
 	ID        uint	 `json:"id" xml:"id" form:"id"`
-	FirstName string `json:"first-name" xml:"first-name" form:"first-name"`
-	LastName  string `json:"last-name" xml:"last-name" form:"last-name"`
+	FirstName string `json:"first_name" xml:"first_name" form:"first_name"`
+	LastName  string `json:"last_name" xml:"last_name" form:"last_name"`
 	Email     string `json:"email" xml:"email" form:"email" gorm:"unique"`
-	Password  []byte `json:"password" xml:"password" form:"password"`
+	Password  []byte `json:"-"`
 }

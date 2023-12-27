@@ -14,9 +14,11 @@ func main() {
 	
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
+		AllowOrigins:     "http://127.0.0.1:5173",
 	}))
     
 	routes.Setup(app)
 	
 	app.Listen(":8000")
 }
+
