@@ -112,13 +112,11 @@ func User(c *fiber.Ctx) error {
 }
 
 func Logout(c *fiber.Ctx) error {
-	cookie := fiber.Cookie{
+	c.Cookie(&fiber.Cookie{
 		Name:     "jwt",
 		Value:    "",
-		Expires:  time.Now().Add(time.Hour * (-24)), // this is the way to expire the cookies
-		HTTPOnly: true,
-	}
-	c.Cookie(&cookie)
+		Expires:  time.Now().Add(-time.Hour), // this is the way to expire the cookies
+	})
 
 	return c.JSON(fiber.Map{
 		"message": "successfully logged out",

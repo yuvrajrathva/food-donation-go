@@ -57,7 +57,6 @@ const Dashboard = (props) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [tab, setTab] = useState(0);
   const { user, logoutUser } = useContext(AuthContext);
-  const navigate = useNavigate();
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
   };
@@ -76,7 +75,7 @@ const Dashboard = (props) => {
     {
       text: "My Profile",
       icon: <InterestsIcon className="text-[#A0A0A0]" />,
-      component: user ? <MyProfile data={user} /> : <Login/>,
+      component: <MyProfile data={user} />,
     },
     {
       text: "About Us",

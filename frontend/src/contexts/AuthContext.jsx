@@ -57,7 +57,6 @@ export const AuthProvider = ({ children }) => {
 
   const logoutUser = async () => {
     await fetch(API_BASE_URL + "/logout/", {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -74,18 +73,28 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (user == null) {
+    if (user === null) {
       const fetchUser = async () => {
-        const response = await fetch(API_BASE_URL + "/user/", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+        try {
+          const response = await fetch(API_BASE_URL + "/user/", {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
 
-        const content = await response.json();
-        setUser(content);
-        setLoading(false);
+          if (response.status == 200) {
+            const content = await response.json();
+            setUser(content);
+          } else {
+            toast.error(response.statusText);
+            navigate("/login");
+          }
+          setLoading(false);
+        } catch (error) {
+          navigate("/login");
+          setLoading(false);
+        }
       };
       fetchUser();
     }

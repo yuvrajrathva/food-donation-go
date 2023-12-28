@@ -27,7 +27,7 @@ const MyInfo = ({name, type, phone, address}) => {
              {type}
           </Typography>
           <Typography variant="body2" component="div">
-            Phone: {phone}
+            Email: {phone}
           </Typography>
           <Typography variant="body2" component="div">
             Address: {address}
